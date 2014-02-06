@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+  <title><![CDATA[blazed's tech blog]]></title>
+  <link href="http://darkstar.se/atom.xml" rel="self"/>
+  <link href="http://darkstar.se/"/>
+  <updated>2014-02-06T19:44:17+01:00</updated>
+  <id>http://darkstar.se/</id>
+  <author>
+    <name><![CDATA[blazed]]></name>
+    
+  </author>
+  <generator uri="http://octopress.org/">Octopress</generator>
+
+  
+  <entry>
+    <title type="html"><![CDATA[My Installation of Zimbra 8.0.5 OSE on CentOS 6.5]]></title>
+    <link href="http://darkstar.se/2013-11-10-my-installation-of-zimbra-8-dot-0-5-ose-on-centos-6-dot-5/"/>
+    <updated>2013-11-10T18:56:02+01:00</updated>
+    <id>http://darkstar.se/my-installation-of-zimbra-8-dot-0-5-ose-on-centos-6-dot-5</id>
+    <content type="html"><![CDATA[<p>Hello!</p>
+
+<p>This is my notes for installation of Zimbra on CentOS hosten on a Proxmox server.</p>
+
+<h3>Software used</h3>
+
+<ul>
+<li><a href="http://www.centos.org/modules/tinycontent/index.php?id=30">CentOS</a> 6.5 (Minimal)</li>
+<li><a href="http://www.zimbra.com/downloads/os-downloads.html">Zimbra OSE</a> 8.0.5</li>
+<li><a href="http://www.proxmox.com/">Proxmox</a> 3.1</li>
+</ul>
+
+
+<h3>Installation steps</h3>
+
+<ul>
+<li><a href="#install-centos">Install CentOS</a></li>
+<li><a href="#initial-configurations">Initial Configurations</a></li>
+<li><a href="#software-configurations">Software Configurations</a></li>
+<li><a href="#install-zimbra">Install Zimbra</a></li>
+<li><a href="#initial-test-and-admin">Initial Test and Admin</a></li>
+</ul>
+
+
+<!-- more -->
+
+
+<h3>Assumptions</h3>
+
+<p>This documention will need to make use of some specific information, it will be marked in <strong><em>bold and italic</em></strong>.</p>
+
+<ul>
+<li>Server name: <strong><em>mail</em></strong></li>
+<li>Internet domain: <strong><em>domain.com</em></strong></li>
+<li>IP address: <strong><em>10.32.0.35</em></strong></li>
+<li>Server IP subnet mask: <strong><em>255.255.255.0</em></strong></li>
+<li>Server IP gateway: <strong><em>10.32.0.1</em></strong></li>
+<li>Internal DNS Server 1: <strong><em>10.32.0.10</em></strong></li>
+<li>Internal DNS Server 2: <strong><em>10.32.0.200</em></strong></li>
+</ul>
+
+
+<h3>Partitions layout</h3>
+
+<p>We&rsquo;re going to use 200 GB for this server and we will use LVM so we can extend it if needed.
+The layout we&rsquo;re going to use:</p>
+
+<ul>
+<li><strong>Boot</strong> &ndash; This will not be included in the LVM as it&rsquo;s going to be static</li>
+<li><strong>Root volume</strong> &ndash; OS files</li>
+<li><strong>Swap volume</strong> &ndash; We&rsquo;re going to use RAM * 2</li>
+<li><strong>OPT volume</strong> &ndash; This is the Zimbra storage and will continue to grow over time</li>
+</ul>
+
+
+<p>And  here&rsquo;s the numbers</p>
+
+<ul>
+<li>boot &ndash; 200MB</li>
+<li>root &ndash; 5GB (This may be to much)</li>
+<li>swap &ndash; 4GB</li>
+<li>opt  &ndash; Rest</li>
+</ul>
+
+
+<h3>Virtual Machine settings (KVM)</h3>
+
+<p>Virtual Host: Proxmox 3.1</p>
+
+<ul>
+<li>Name: Mail</li>
+<li>OS: Linux 3.x/2.6 Kernel</li>
+<li>Device: Virtio</li>
+<li>Format: qcow2</li>
+<li>CPU cores: 8</li>
+<li>Memory: 1024 &ndash; 2048 MB</li>
+<li>Network: Virtio, bridged to vmbr0</li>
+</ul>
+
+
+<p><a name="install-centos"></a></p>
+
+<h3>Install CentOS</h3>
+
+<ol>
+<li>Power on the Virtual Machine</li>
+<li>Select <strong>Install or upgrade existing system</strong></li>
+<li>Select <strong>Skip</strong> and press ENTER</li>
+<li>Press Next</li>
+<li>Select your language and press Next</li>
+<li>Select your keyboard layout and press Next</li>
+<li>Select <strong>Basic Storage Devices</strong> and press Next</li>
+<li>Enter <strong><em>mail</em></strong> as your hostname and press Configure Network</li>
+<li>Select <strong><em>System eth0</em></strong> and press edit</li>
+<li>Check the <em>Connect automatically</em> box and press <em>IPv4 Settings</em></li>
+<li>Switch <em>Method</em> to Manual</li>
+<li>Press Add and enter <strong><em>10.32.0.35</em></strong> as your Adress, <strong><em>255.255.255.0</em></strong> as Netmask and <strong><em>10.32.0.1</em></strong> as Gateway</li>
+<li>DNS Server: <strong><em>10.32.0.1</em></strong>, <strong><em>10.32.0.200</em></strong> and press <strong>Apply</strong>, <strong>Close</strong> and <strong>Next</strong></li>
+<li>Select your Time Zone and press Next</li>
+<li>Enter a password for the root user and press Next</li>
+<li>Select Use All Space and check the <strong>Review and modify partitions layout</strong> box and press Next</li>
+<li>Resize the /boot partition to 200 MB</li>
+<li>Expand the LVM with the extra 300 MB from the /boot partition</li>
+<li>Create a new VG and press Add, select mount point /, file system ext4 LVM name root and size to 5120MB</li>
+<li>Add another one with the name <strong>swap</strong> and file system swap with the size of 2 * Total RAM, in my case 4096 MB</li>
+<li>Add yet another one with the Mount Point <strong>/opt</strong>, file system <strong>ext4</strong>, LVM name opt and use the prefilled Size</li>
+<li>Press Okey and check that everything looks nice, then press Next</li>
+<li>Press <strong>Write changes to disk</strong></li>
+<li>On the next screen press <strong>Next</strong></li>
+<li>Wait for the installation to finish</li>
+<li>Press Reboot</li>
+<li>The installation is now done and you can remove the ISO</li>
+</ol>
+
+
+<p><a name="initial-configurations"></a></p>
+
+<h3>Initial Configurations</h3>
+
+<p>I&rsquo;m going to use SSH from here on to simplify my work
+1. Login via SSH with the command <strong>ssh root@10.32.0.35</strong>
+2. Type <strong>ifconfig</strong> to verify that the server is using the right IP address
+3. Type <strong>ping -c 1 google.com</strong> to verify that you have internet access</p>
+
+<p><a name="software-configurations"></a></p>
+
+<h3>Software Configurations</h3>
+
+<ol>
+<li>Connect to the server via SSH</li>
+<li>Type <code>yum update</code></li>
+<li>Restart the server with the following command <code>shutdown -r now</code></li>
+<li>Reconnect via SSH and edit <em>/etc/hosts</em> by typing <code>vi /etc/hosts</code> with the following changes</li>
+</ol>
+
+
+<figure class='code'><figcaption><span>/etc/hosts </span></figcaption>
+<div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>127.0.0.1      localhost
+</span><span class='line'>10.32.0.35     mail.domain.com mail  <span class="c"># Use your own settings here</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Verify your settings via <code>hostname</code> and <code>hostname -f</code> it should result with:</p>
+
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>mail
+</span><span class='line'>mail.domain.com
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p><a name="install-zimbra"></a></p>
+
+<h3>Install Zimbra</h3>
+
+<p>Start to install some of the prerequisite:
+<code>yum -y install perl nc sysstat</code></p>
+
+<p>Download adn extract the file
+<code>curl -O http://files2.zimbra.com/downloads/8.0.5_GA/zcs-8.0.5_GA_5839.RHEL6_64.20130910123908.tgz</code>
+<code>tar -zxf zcs-8.0.5_GA_5839.RHEL6_64.20130910123908.tgz</code></p>
+
+<p>Start the installation process:
+<code>cd zcs-8.0.5_GA_5839.RHEL6_64.20130910123908</code>
+<code>./install.sh</code></p>
+
+<p>Agree to the licenses by pressing <strong>y</strong> and Enter</p>
+
+<p>After that is should print out something like this:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Checking <span class="k">for </span>prerequisites...
+</span><span class='line'>     FOUND: NPTL
+</span><span class='line'>     FOUND: nc-1.84-22
+</span><span class='line'>     FOUND: sudo-1.8.6p3-7
+</span><span class='line'>     FOUND: libidn-1.18-2
+</span><span class='line'>     FOUND: gmp-4.3.1-7
+</span><span class='line'>     FOUND: /usr/lib64/libstdc++.so.6
+</span><span class='line'>
+</span><span class='line'>Checking <span class="k">for </span>suggested prerequisites...
+</span><span class='line'>     FOUND: perl-5.10.1
+</span><span class='line'>     FOUND: sysstat
+</span><span class='line'>     FOUND: sqlite
+</span><span class='line'>Prerequisite check complete.
+</span><span class='line'>
+</span><span class='line'>Checking <span class="k">for </span>installable packages
+</span><span class='line'>
+</span><span class='line'>Found zimbra-core
+</span><span class='line'>Found zimbra-ldap
+</span><span class='line'>Found zimbra-logger
+</span><span class='line'>Found zimbra-mta
+</span><span class='line'>Found zimbra-snmp
+</span><span class='line'>Found zimbra-store
+</span><span class='line'>Found zimbra-apache
+</span><span class='line'>Found zimbra-spell
+</span><span class='line'>Found zimbra-memcached
+</span><span class='line'>Found zimbra-proxy
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Now let&rsquo;s choose what to install</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Select the packages to install
+</span><span class='line'>
+</span><span class='line'>Install zimbra-ldap <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>
+</span><span class='line'>Install zimbra-logger <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>
+</span><span class='line'>Install zimbra-mta <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>
+</span><span class='line'>Install zimbra-snmp <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>
+</span><span class='line'>Install zimbra-store <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>
+</span><span class='line'>Install zimbra-apache <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>
+</span><span class='line'>Install zimbra-spell <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>
+</span><span class='line'>Install zimbra-memcached <span class="o">[</span>N<span class="o">]</span> n
+</span><span class='line'>
+</span><span class='line'>Install zimbra-proxy <span class="o">[</span>N<span class="o">]</span> n
+</span><span class='line'>Checking required space <span class="k">for </span>zimbra-core
+</span><span class='line'>Checking space <span class="k">for </span>zimbra-store
+</span><span class='line'>
+</span><span class='line'>Installing:
+</span><span class='line'>    zimbra-core
+</span><span class='line'>    zimbra-ldap
+</span><span class='line'>    zimbra-logger
+</span><span class='line'>    zimbra-mta
+</span><span class='line'>    zimbra-snmp
+</span><span class='line'>    zimbra-store
+</span><span class='line'>    zimbra-apache
+</span><span class='line'>    zimbra-spell
+</span><span class='line'>
+</span><span class='line'>The system will be modified.  Continue? <span class="o">[</span>N<span class="o">]</span> y
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>When you get the following error:</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>DNS ERROR resolving MX <span class="k">for </span>mail.domain.com
+</span><span class='line'>It is suggested that the domain name have an MX record configured in DNS
+</span><span class='line'>Change domain name? <span class="o">[</span>Yes<span class="o">]</span>
+</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Press <strong>y</strong> and change it to <strong><em>domain.com</em></strong> and press enter</p>
+
+<p>Next you will be presented with a menu for configurations, press <strong>3</strong> and then <strong>4</strong> and type in your new password.
+Press <strong>r</strong> then <strong>a</strong>
+Type <strong>Yes</strong> to save the configuration file</p>
+
+<p><a name="initial-test-and-admin"></a></p>
+
+<h3>Initial Test and Admin</h3>
+
+<p>Access the webmail control panel via the address <a href="https://10.32.0.35:7071">https://10.32.0.35:7071</a>
+<strong>NOTE</strong>: If you can&rsquo;t connect, you probably forgot to open the ports in the firewall, here&rsquo;s my firewall configuration</p>
+
+<figure class='code'><figcaption><span>cat</span><a href='http://darkstar.se/etc/sysconfig/iptables'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'># Firewall configuration written by system-config-firewall
+</span><span class='line'># Manual customization of this file is not recommended.
+</span><span class='line'>*filter
+</span><span class='line'>:INPUT ACCEPT [0:0]
+</span><span class='line'>:FORWARD ACCEPT [0:0]
+</span><span class='line'>:OUTPUT ACCEPT [0:0]
+</span><span class='line'>-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+</span><span class='line'>-A INPUT -p icmp -j ACCEPT
+</span><span class='line'>-A INPUT -i lo -j ACCEPT
+</span><span class='line'>-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 25 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 110 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 143 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 456 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 587 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 993 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 995 -j ACCEPT 
+</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 7071 -j ACCEPT 
+</span><span class='line'>-A INPUT -j REJECT --reject-with icmp-host-prohibited
+</span><span class='line'>-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+</span><span class='line'>COMMIT</span></code></pre></td></tr></table></div></figure>
+
+
+<p>Login with admin@<strong><em>domain.com</em></strong> and your password
+Create a new account and when you&rsquo;re done, try to access it via <a href="https://10.32.0.35/">https://10.32.0.35/</a> send an email to your external email account.</p>
+]]></content>
+  </entry>
+  
+</feed>
