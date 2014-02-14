@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[blazed's tech blog]]></title>
-  <link href="http://darkstar.se/atom.xml" rel="self"/>
+  <title><![CDATA[Category: Proxmox | blazed's tech blog]]></title>
+  <link href="http://darkstar.se/categories/proxmox/atom.xml" rel="self"/>
   <link href="http://darkstar.se/"/>
   <updated>2014-02-14T01:39:47+01:00</updated>
   <id>http://darkstar.se/</id>
@@ -154,22 +154,19 @@ The layout we&rsquo;re going to use:</p>
 </ol>
 
 
-<figure class='code'><figcaption><span>/etc/hosts </span></figcaption>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>/etc/hosts </span></figcaption>
 <div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>127.0.0.1      localhost
 </span><span class='line'>10.32.0.35     mail.domain.com mail  <span class="c"># Use your own settings here</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Verify your settings via <code>hostname</code> and <code>hostname -f</code> it should result with:</p>
 
-<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
-<span class='line-number'>2</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>mail
-</span><span class='line'>mail.domain.com
-</span></code></pre></td></tr></table></div></figure>
-
+<p><code>bash
+mail
+mail.domain.com
+</code></p>
 
 <p><a name="install-zimbra"></a></p>
 
@@ -190,7 +187,7 @@ The layout we&rsquo;re going to use:</p>
 
 <p>After that is should print out something like this:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -216,23 +213,33 @@ The layout we&rsquo;re going to use:</p>
 <span class='line-number'>24</span>
 <span class='line-number'>25</span>
 <span class='line-number'>26</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Checking <span class="k">for </span>prerequisites...
-</span><span class='line'>     FOUND: NPTL
-</span><span class='line'>     FOUND: nc-1.84-22
-</span><span class='line'>     FOUND: sudo-1.8.6p3-7
-</span><span class='line'>     FOUND: libidn-1.18-2
-</span><span class='line'>     FOUND: gmp-4.3.1-7
-</span><span class='line'>     FOUND: /usr/lib64/libstdc++.so.6
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Checking <span class="k">for </span>prerequisites&amp;hellip;&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Checking <span class="k">for </span>suggested prerequisites...
-</span><span class='line'>     FOUND: perl-5.10.1
-</span><span class='line'>     FOUND: sysstat
-</span><span class='line'>     FOUND: sqlite
-</span><span class='line'>Prerequisite check complete.
+</span><span class='line'>&lt;pre&gt;&lt;code&gt; FOUND: NPTL
+</span><span class='line'> FOUND: nc-1.84-22
+</span><span class='line'> FOUND: sudo-1.8.6p3-7
+</span><span class='line'> FOUND: libidn-1.18-2
+</span><span class='line'> FOUND: gmp-4.3.1-7
+</span><span class='line'> FOUND: /usr/lib64/libstdc++.so.6
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
 </span><span class='line'>
-</span><span class='line'>Checking <span class="k">for </span>installable packages
+</span><span class='line'>&lt;p&gt;Checking <span class="k">for </span>suggested prerequisites&amp;hellip;&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Found zimbra-core
+</span><span class='line'>&lt;pre&gt;&lt;code&gt; FOUND: perl-5.10.1
+</span><span class='line'> FOUND: sysstat
+</span><span class='line'> FOUND: sqlite
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Prerequisite check complete.&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Checking <span class="k">for </span>installable packages&lt;/p&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;Found zimbra-core
 </span><span class='line'>Found zimbra-ldap
 </span><span class='line'>Found zimbra-logger
 </span><span class='line'>Found zimbra-mta
@@ -242,12 +249,11 @@ The layout we&rsquo;re going to use:</p>
 </span><span class='line'>Found zimbra-spell
 </span><span class='line'>Found zimbra-memcached
 </span><span class='line'>Found zimbra-proxy
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Now let&rsquo;s choose what to install</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -280,52 +286,54 @@ The layout we&rsquo;re going to use:</p>
 <span class='line-number'>31</span>
 <span class='line-number'>32</span>
 <span class='line-number'>33</span>
-</pre></td><td class='code'><pre><code class='bash'><span class='line'>Select the packages to install
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+</pre></td><td class='code'><pre><code class='bash'><span class='line'>Select the packages to install&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-ldap <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>&lt;p&gt;Install zimbra-ldap <span class="o">[</span>Y<span class="o">]</span> y&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-logger <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>&lt;p&gt;Install zimbra-logger <span class="o">[</span>Y<span class="o">]</span> y&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-mta <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>&lt;p&gt;Install zimbra-mta <span class="o">[</span>Y<span class="o">]</span> y&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-snmp <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>&lt;p&gt;Install zimbra-snmp <span class="o">[</span>Y<span class="o">]</span> y&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-store <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>&lt;p&gt;Install zimbra-store <span class="o">[</span>Y<span class="o">]</span> y&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-apache <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>&lt;p&gt;Install zimbra-apache <span class="o">[</span>Y<span class="o">]</span> y&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-spell <span class="o">[</span>Y<span class="o">]</span> y
+</span><span class='line'>&lt;p&gt;Install zimbra-spell <span class="o">[</span>Y<span class="o">]</span> y&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-memcached <span class="o">[</span>N<span class="o">]</span> n
+</span><span class='line'>&lt;p&gt;Install zimbra-memcached <span class="o">[</span>N<span class="o">]</span> n&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Install zimbra-proxy <span class="o">[</span>N<span class="o">]</span> n
+</span><span class='line'>&lt;p&gt;Install zimbra-proxy <span class="o">[</span>N<span class="o">]</span> n
 </span><span class='line'>Checking required space <span class="k">for </span>zimbra-core
-</span><span class='line'>Checking space <span class="k">for </span>zimbra-store
+</span><span class='line'>Checking space <span class="k">for </span>zimbra-store&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>Installing:
-</span><span class='line'>    zimbra-core
-</span><span class='line'>    zimbra-ldap
-</span><span class='line'>    zimbra-logger
-</span><span class='line'>    zimbra-mta
-</span><span class='line'>    zimbra-snmp
-</span><span class='line'>    zimbra-store
-</span><span class='line'>    zimbra-apache
-</span><span class='line'>    zimbra-spell
+</span><span class='line'>&lt;p&gt;Installing:&lt;/p&gt;
 </span><span class='line'>
-</span><span class='line'>The system will be modified.  Continue? <span class="o">[</span>N<span class="o">]</span> y
-</span></code></pre></td></tr></table></div></figure>
-
+</span><span class='line'>&lt;pre&gt;&lt;code&gt;zimbra-core
+</span><span class='line'>zimbra-ldap
+</span><span class='line'>zimbra-logger
+</span><span class='line'>zimbra-mta
+</span><span class='line'>zimbra-snmp
+</span><span class='line'>zimbra-store
+</span><span class='line'>zimbra-apache
+</span><span class='line'>zimbra-spell
+</span><span class='line'>&lt;/code&gt;&lt;/pre&gt;
+</span><span class='line'>
+</span><span class='line'>&lt;p&gt;The system will be modified.  Continue? <span class="o">[</span>N<span class="o">]</span> y
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>When you get the following error:</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<p><div class='bogus-wrapper'><notextile><figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 </pre></td><td class='code'><pre><code class='bash'><span class='line'>DNS ERROR resolving MX <span class="k">for </span>mail.domain.com
 </span><span class='line'>It is suggested that the domain name have an MX record configured in DNS
 </span><span class='line'>Change domain name? <span class="o">[</span>Yes<span class="o">]</span>
-</span></code></pre></td></tr></table></div></figure>
-
+</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Press <strong>y</strong> and change it to <strong><em>domain.com</em></strong> and press enter</p>
 
@@ -338,9 +346,8 @@ Type <strong>Yes</strong> to save the configuration file</p>
 <h3>Initial Test and Admin</h3>
 
 <p>Access the webmail control panel via the address <a href="https://10.32.0.35:7071">https://10.32.0.35:7071</a>
-<strong>NOTE</strong>: If you can&rsquo;t connect, you probably forgot to open the ports in the firewall, here&rsquo;s my firewall configuration</p>
-
-<figure class='code'><figcaption><span>cat</span><a href='http://darkstar.se/etc/sysconfig/iptables'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<strong>NOTE</strong>: If you can&rsquo;t connect, you probably forgot to open the ports in the firewall, here&rsquo;s my firewall configuration
+<div class='bogus-wrapper'><notextile><figure class='code'><figcaption><span>cat</span><a href='/etc/sysconfig/iptables'>link</a></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -363,30 +370,37 @@ Type <strong>Yes</strong> to save the configuration file</p>
 <span class='line-number'>21</span>
 <span class='line-number'>22</span>
 <span class='line-number'>23</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'># Firewall configuration written by system-config-firewall
-</span><span class='line'># Manual customization of this file is not recommended.
-</span><span class='line'>*filter
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>&lt;/p>
+</span><span class='line'>
+</span><span class='line'>&lt;h1>Firewall configuration written by system-config-firewall&lt;/h1>
+</span><span class='line'>
+</span><span class='line'>&lt;h1>Manual customization of this file is not recommended.&lt;/h1>
+</span><span class='line'>
+</span><span class='line'>&lt;p>*filter
 </span><span class='line'>:INPUT ACCEPT [0:0]
 </span><span class='line'>:FORWARD ACCEPT [0:0]
 </span><span class='line'>:OUTPUT ACCEPT [0:0]
-</span><span class='line'>-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+</span><span class='line'>-A INPUT -m state &mdash;state ESTABLISHED,RELATED -j ACCEPT
 </span><span class='line'>-A INPUT -p icmp -j ACCEPT
 </span><span class='line'>-A INPUT -i lo -j ACCEPT
-</span><span class='line'>-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 25 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 110 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 143 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 456 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 587 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 993 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 995 -j ACCEPT 
-</span><span class='line'>-A INPUT -p tcp -m state --state NEW -m tcp --dport 7071 -j ACCEPT 
-</span><span class='line'>-A INPUT -j REJECT --reject-with icmp-host-prohibited
-</span><span class='line'>-A FORWARD -j REJECT --reject-with icmp-host-prohibited
-</span><span class='line'>COMMIT</span></code></pre></td></tr></table></div></figure>
-
+</span><span class='line'>-A INPUT -m state &mdash;state NEW -m tcp -p tcp &mdash;dport 22 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 25 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 80 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 110 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 143 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 443 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 456 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 587 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 993 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 995 -j ACCEPT
+</span><span class='line'>-A INPUT -p tcp -m state &mdash;state NEW -m tcp &mdash;dport 7071 -j ACCEPT
+</span><span class='line'>-A INPUT -j REJECT &mdash;reject-with icmp-host-prohibited
+</span><span class='line'>-A FORWARD -j REJECT &mdash;reject-with icmp-host-prohibited
+</span><span class='line'>COMMIT</span></code></pre></td></tr></table></div></figure></notextile></div></p>
 
 <p>Login with admin@<strong><em>domain.com</em></strong> and your password
 Create a new account and when you&rsquo;re done, try to access it via <a href="https://10.32.0.35/">https://10.32.0.35/</a> send an email to your external email account.</p>
